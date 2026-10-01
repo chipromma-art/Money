@@ -26,12 +26,14 @@ body{font-family:'Kanit',sans-serif;font-weight:300;background:var(--bg);color:v
   background-image:radial-gradient(900px 500px at 10% -10%,rgba(99,102,241,.18),transparent),radial-gradient(700px 400px at 90% 0%,rgba(139,92,246,.14),transparent)}
 body.light{background-image:radial-gradient(900px 500px at 10% -10%,rgba(99,102,241,.08),transparent),radial-gradient(700px 400px at 90% 0%,rgba(139,92,246,.06),transparent)}
 .wrap{max-width:1180px;margin:auto}
-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
 .logo{display:flex;align-items:center;gap:10px}
 .logo .mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:600;font-size:17px;color:#fff}
 h1{font-size:19px;font-weight:600}
 .sub{font-size:11.5px;color:var(--muted)}
-.header-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.top-toolbar{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px;margin-bottom:14px;flex-wrap:wrap}
+.month-box{width:210px}
+.action-buttons{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-left:auto}
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:12px}
 .card{background:linear-gradient(160deg,var(--surface),var(--surface2));border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;position:relative;overflow:hidden}
 .card::after{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--c,var(--accent))}
@@ -48,7 +50,7 @@ input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(99
 button{font-family:inherit;font-weight:400;font-size:13.5px;padding:8px 16px;border:none;border-radius:9px;cursor:pointer;transition:.18s;color:#fff;
   background:linear-gradient(135deg,var(--accent),var(--accent2))}
 button:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(99,102,241,.3)}
-button.ghost{background:var(--surface2);border:1px solid var(--line);color:var(--text);width:auto;padding:7px 12px;font-size:12px}
+button.ghost{background:var(--surface2);border:1px solid var(--line);color:var(--text);width:auto;padding:8px 12px;font-size:12px}
 button.ghost:hover{box-shadow:none;border-color:var(--accent)}
 .tabs{display:flex;gap:4px;background:var(--surface2);padding:4px;border-radius:10px;margin-bottom:12px;width:100%;overflow-x:auto}
 .tabs button{background:none;color:var(--muted);padding:7px 12px;border-radius:8px;font-size:12.5px;white-space:nowrap;flex:1}
@@ -79,15 +81,17 @@ tbody tr:hover{background:var(--surface2)}
 .dot{display:inline-block;width:8px;height:8px;border-radius:3px;margin-right:4px}
 .filter-toolbar{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
 
-#syncStat{font-size:11.5px;color:var(--muted)}
-@media(max-width:900px){
+#syncStat{font-size:11px;color:var(--muted);width:100%;margin-top:2px}
+@media(max-width:768px){
   .grid2{grid-template-columns:1fr}
   .panel-equal{height:auto;max-height:400px}
   body{padding:6px}
-  .header-actions{width:100%;justify-content:space-between}
-  .header-actions > * {flex:1;text-align:center;min-width:auto}
-  .filter-toolbar {width:100%;margin-top:6px}
-  .filter-toolbar select, .filter-toolbar input {flex:1;min-width:90px}
+  .top-toolbar{flex-direction:column;align-items:stretch}
+  .month-box{width:100%}
+  .action-buttons{width:100%;margin-left:0;display:grid;grid-template-columns:repeat(2, 1fr);gap:6px}
+  .action-buttons button {width:100%}
+  .filter-toolbar {width:100%;margin-top:4px}
+  .filter-toolbar select, .filter-toolbar input {flex:1;min-width:80px}
 }
 </style>
 </head>
@@ -97,16 +101,19 @@ tbody tr:hover{background:var(--surface2)}
   <div class="logo"><div class="mark">D$</div>
     <div><h1>Dan Wutthi</h1><div class="sub">ระบบบริหารรายรับ-รายจ่ายส่วนบุคคล</div></div>
   </div>
-  <div class="header-actions">
-    <div style="min-width:120px"><label>เดือนที่ดู</label><input type="month" id="fMonth" onchange="render()"></div>
-    <button class="ghost" onclick="toggleTheme()" id="themeBtn">☀️ โหมดสว่าง</button>
+  <button class="ghost" onclick="toggleTheme()" id="themeBtn">☀️ โหมดสว่าง</button>
+</header>
+
+<div class="top-toolbar">
+  <div class="month-box"><label>เดือนที่ดู</label><input type="month" id="fMonth" onchange="render()"></div>
+  <div class="action-buttons">
     <button class="ghost" onclick="exportCSV()">⬇ CSV</button>
     <button class="ghost" onclick="syncUp()">☁ ซิงก์</button>
     <button class="ghost" onclick="syncDown()">⬇ ดึงข้อมูล</button>
     <button class="ghost" onclick="clearAll()">ล้าง</button>
-    <span id="syncStat"></span>
   </div>
-</header>
+  <span id="syncStat"></span>
+</div>
 
 <div class="cards">
   <div class="card" style="--c:var(--in)"><div class="label">รายรับรวม</div><div class="value" id="sIn">0</div><div class="hint" id="hIn">0 รายการ</div></div>
